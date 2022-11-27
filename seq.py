@@ -1,38 +1,48 @@
-#código em desenvolvimento
-
 import pyautogui as pt
 import random
 import secrets
 import time
 from datetime import datetime, timedelta
+import numpy as np
+import itertools 
+from itertools import permutations  
 
-#lista de pausa
-random_pause = ['1', '2', '3', '4', '5']
+#lista de possíveis tempos de pausa em segundos
+random_pause = ['1', '1.3', '1.7', '2', '2.1', '2.4', '2.8', '3', '3.2', '3.5', '3.9', '4']
 
-#localiza horário inicial
-start = datetime.now()
+#----------------------------DEFININDO DURAÇÃO DE EXECUÇÃO---------------------------------#
+start = datetime.now() #horário de início
+time = input('quantas horas quer deixar o bot rodando?\n')\n #definir duração
+end = (datetime.now() + timedelta(hours = time)).strftime('%H:%M:%S') #calcula quando parar o bot
 
-#definir duração
-time = input('quantas horas quer deixar o bot rodando?\n') \n
-
-#define quando parar o bot
-end = (datetime.now() + timedelta(hours = time)).strftime('%H:%M:%S')
-
-#pausa aleatória
 time.sleep(secrets.choice(random_pause))
 
+#----------------------------LOCALIZANDO BOTÕES E ATRIBUINDO VARIÁVEIS DE POSICIONAMENTO---------------------------------#
+#atribui as posições dos botões
+positions = []
+for pos in pyautogui.locateAllOnScreen('someButton.png')
+	positions = pos #[(1101, 252, 50, 50), (59, 481, 50, 50), (1395, 640, 50, 50)] #returns (left, top, width, height)
+
+#----------------------------CONSTRUINDO MATRIZ DE RANDOMICIDADE---------------------------------#
+#construir matriz randomica das 6 salas
+x = []
+y = []
+for pos in positions: #criando range
+	x = np.linspace(pos[0], pos[0]+pos[2]-1, pos[2])
+	y = np.linspace(pos[1], pos[1]+pos[3]-1, pos[3])
+	
+	combinations = [] 
+	permut = itertools.permutations(x, len(y)) 
+	for comb in permut: 
+	    zipped = zip(comb, y) 
+	    combinations.append(list(zipped))	
+
+#-------------------------------------LOOP DE REPETIÇÃO------------------------------------------#
 #enquanto não alcançar o horário estimado, execute:
 while datetime.now() < end:
 
-	#atribui as posições dos botões
-	positions = []
-	for pos in pyautogui.locateAllOnScreen('someButton.png')
-		positions = pos
-	list(pyautogui.locateAllOnScreen('someButton.png'))
-	[(1101, 252, 50, 50), (59, 481, 50, 50), (1395, 640, 50, 50), (1838, 676, 50, 50)] #returns (left, top, width, height) - numeros de exemplo
-
-	#escolhe aleatóriamente um dos botôes e clica fazendo firula
-	mouse.click(secrets.choice(positions))
+	#clica em um botão aleatório
+	mouse.click(secrets.choice(unique_combinations))
 	
 	#pausa aleatória
 	time.sleep(secrets.choice(random_pause))
@@ -40,12 +50,9 @@ while datetime.now() < end:
 	se localizar combatente: 
 		clica
 	else: clica em sair
-
+	
+	#pausa aleatória
 	time.sleep(secrets.choice(random_pause))
 
-3mensagem de alerta ao alcançar o horário pre-determinado
 pyautogui.alert('Bot finalizado!')
-
-
-
 
